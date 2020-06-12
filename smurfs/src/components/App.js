@@ -38,7 +38,12 @@ class App extends Component {
         <h1>Smurfs Here!</h1>
         <hr />
         {this.props.smurfs.map((smurf) => (
-          <DataCard smurf={smurf} key={smurf.id} />
+          <DataCard
+            smurf={smurf}
+            key={smurf.id}
+            dispatch={this.props.dispatch}
+            api={api}
+          />
         ))}
         <SmurfForm dispatch={this.props.dispatch} api={api} />
       </div>
