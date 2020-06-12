@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import "./App.css";
 import DataCard from "./DataCard";
 import { connect } from "react-redux";
-import { fetchSmurfs } from "../actions/actions";
+
 import api from "../api";
-import { FETCHING_SMURF_SUCCESS } from "../types";
+import { FETCHING_SMURF_SUCCESS, FETCHING_SMURF } from "../types";
+import SmurfForm from "./SmurfForm";
 
 class App extends Component {
   constructor(props) {
@@ -12,17 +13,20 @@ class App extends Component {
   }
 
   componentDidMount() {
-    api
-      .get("/smurfs")
-      .then((res) => {
-        this.props.dispatch({
-          type: FETCHING_SMURF_SUCCESS,
-          payload: res.data,
+    if (this.props.smurfs.length <= 0) {
+      this.props.dispatch({ type: FETCHING_SMURF });
+      api
+        .get("/smurfs")
+        .then((res) => {
+          this.props.dispatch({
+            type: FETCHING_SMURF_SUCCESS,
+            payload: res.data,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    }
   }
 
   render() {
@@ -34,8 +38,9 @@ class App extends Component {
         <h1>Smurfs Here!</h1>
         <hr />
         {this.props.smurfs.map((smurf) => (
-          <DataCard smurf={smurf} />
+          <DataCard smurf={smurf} key={smurf.id} />
         ))}
+        <SmurfForm dispatch={this.props.dispatch} api={api} />
       </div>
     );
   }
@@ -49,6 +54,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, (dispatch) => ({
-  fetchSmurfs,
   dispatch,
 }))(App);

@@ -5,7 +5,6 @@ const initialState = {
   loading: false,
 };
 const reducer = (state = initialState, action) => {
-  console.log("here");
   switch (action.type) {
     case FETCHING_SMURF:
       return { ...state, loading: true };
