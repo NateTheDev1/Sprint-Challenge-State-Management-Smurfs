@@ -1,16 +1,54 @@
 import React, { Component } from "react";
 import "./App.css";
+import DataCard from "./DataCard";
+import { connect } from "react-redux";
+import { fetchSmurfs } from "../actions/actions";
+import api from "../api";
+import { FETCHING_SMURF_SUCCESS } from "../types";
+
 class App extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    api
+      .get("/smurfs")
+      .then((res) => {
+        this.props.dispatch({
+          type: FETCHING_SMURF_SUCCESS,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   render() {
+    if (this.props.loading) {
+      return <h1 style={{ textAlign: "center" }}>Fetching Smurfs</h1>;
+    }
     return (
       <div className="App">
-        <h1>SMURFS! 2.0 W/ Redux</h1>
-        <div>Welcome to your state management version of Smurfs!</div>
-        <div>Start inside of your `src/index.js` file!</div>
-        <div>Have fun!</div>
+        <h1>Smurfs Here!</h1>
+        <hr />
+        {this.props.smurfs.map((smurf) => (
+          <DataCard smurf={smurf} />
+        ))}
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    loading: state.loading,
+    smurfs: state.smurfs,
+  };
+};
+
+export default connect(mapStateToProps, (dispatch) => ({
+  fetchSmurfs,
+  dispatch,
+}))(App);
