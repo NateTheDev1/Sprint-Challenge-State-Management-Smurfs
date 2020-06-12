@@ -23,7 +23,16 @@ const DataCard = ({ smurf, dispatch, api }) => {
   };
 
   return (
-    <div style={{ width: "25%" }}>
+    <div
+      style={{
+        width: "25%",
+        marginTop: "5%",
+        background: "lightgray",
+        borderRadius: "10px",
+        marginLeft: "3%",
+        marginRight: "3%",
+      }}
+    >
       <h1>Name: {smurf.name}</h1>
       <h2>Age: {smurf.age}</h2>
       <p>Height: {smurf.height}</p>
