@@ -1,12 +1,29 @@
-import React, { useState } from "react";
-import { POSTING_SMURF, FETCHING_SMURF_SUCCESS } from "../types";
+import React, { useState, useEffect } from "react";
+import {
+  POSTING_SMURF,
+  FETCHING_SMURF_SUCCESS,
+  EDITING_SUCCESS,
+} from "../types";
 
-const SmurfForm = ({ dispatch, api }) => {
+const SmurfForm = ({ dispatch, api, title, currentEdit, view }) => {
   const [formValues, setFormValues] = useState({
     name: "",
     age: 1,
     height: "",
   });
+
+  const [id, setId] = useState(null);
+
+  useEffect(() => {
+    if (view === "editing") {
+      setFormValues({
+        name: currentEdit.name,
+        age: currentEdit.age,
+        height: currentEdit.height,
+      });
+      setId(currentEdit.id);
+    }
+  }, [view]);
 
   const handleChange = (e) => {
     setFormValues({
@@ -17,20 +34,32 @@ const SmurfForm = ({ dispatch, api }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch({ type: POSTING_SMURF });
-    api
-      .post("/smurfs", formValues)
-      .then((res) => {
-        dispatch({ type: FETCHING_SMURF_SUCCESS, payload: res.data });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    if (view === "new") {
+      dispatch({ type: POSTING_SMURF });
+      api
+        .post("/smurfs", formValues)
+        .then((res) => {
+          dispatch({ type: FETCHING_SMURF_SUCCESS, payload: res.data });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else if (view === "editing") {
+      api
+        .put(`/smurfs/${id}`, formValues)
+        .then((res) => {
+          dispatch({ type: EDITING_SUCCESS });
+          dispatch({ type: FETCHING_SMURF_SUCCESS, payload: res.data });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1> Smurf Onboarding</h1>
+      <h1>{title}</h1>
       <input
         type="text"
         placeholder="Name"

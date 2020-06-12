@@ -45,7 +45,15 @@ class App extends Component {
             api={api}
           />
         ))}
-        <SmurfForm dispatch={this.props.dispatch} api={api} />
+        <SmurfForm
+          dispatch={this.props.dispatch}
+          api={api}
+          title={this.props.editing ? "Editing Smurf" : "Smurf Onboarding"}
+          currentEdit={
+            this.props.currentEdit !== null ? this.props.currentEdit : null
+          }
+          view={this.props.editing ? "editing" : "new"}
+        />
       </div>
     );
   }
@@ -55,6 +63,8 @@ const mapStateToProps = (state) => {
   return {
     loading: state.loading,
     smurfs: state.smurfs,
+    editing: state.editing,
+    currentEdit: state.currentEdit,
   };
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { FETCHING_SMURF_SUCCESS, DELETING_SMURF } from "../types";
+import { FETCHING_SMURF_SUCCESS, DELETING_SMURF, EDITING } from "../types";
 
 const DataCard = ({ smurf, dispatch, api }) => {
   if (!smurf) {
@@ -18,12 +18,17 @@ const DataCard = ({ smurf, dispatch, api }) => {
       });
   };
 
+  const handleEdit = () => {
+    dispatch({ type: EDITING, payload: smurf });
+  };
+
   return (
     <div style={{ width: "25%" }}>
       <h1>Name: {smurf.name}</h1>
       <h2>Age: {smurf.age}</h2>
       <p>Height: {smurf.height}</p>
       <p>Smurf ID: {smurf.id}</p>
+      <button onClick={handleEdit}>Edit</button>
       <button onClick={handleDelete}>Delete</button>
     </div>
   );
